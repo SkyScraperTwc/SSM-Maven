@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop
+						http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+						http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context-4.0.xsd
+					    http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://mybatis.org/schema/mybatis-spring
+						http://mybatis.org/schema/mybatis-spring-1.2.xsd">
+
+	<context:component-scan base-package="indi.twc.mybatis">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan> 
+	
+	 <!-- 使@Aspect注解起作用：为目标类生成代理对象 -->
+	 <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+
+	<!--引入资源-->
+	<context:property-placeholder location="classpath:conf/db.properties"/>
+	
+	 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+			<property name="user" value="${jdbc.username}"/>
+			<property name="driverClass" value="${jdbc.driverClass}"/>
+			<property name="jdbcUrl" value="${jdbc.jdbcUrl}"/>
+			<property name="password" value="${jdbc.password}"/>
+		</bean>
+
+	<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+			<property name="dataSource" ref="dataSource"></property>
+			<!--configLocation指定mybatis-config.xml文件的位置-->
+			<property name="configLocation" value="classpath:conf/mybatis-config.xml"></property>
+			<!--mapperLocations指定mapper.xml文件的位置-->
+			<property name="mapperLocations" value="classpath:indi/twc/mybatis/dao/*.xml"></property>
+		</bean>
+
+		<mybatis:scan base-package="indi.twc.mybatis.mapper"></mybatis:scan>
+
+		<!-- DAO接口所在包名，Spring会自动查找其下的类 -->
+		<!--<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">-->
+			<!--<property name="basePackage" value="indi.twc.mybatis.mapper" />-->
+		<!--</bean>-->
+
+		<bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+			<property name="dataSource" ref="dataSource"> </property>
+		</bean>
+
+	<tx:annotation-driven transaction-manager="dataSourceTransactionManager"></tx:annotation-driven>
+
+</beans>

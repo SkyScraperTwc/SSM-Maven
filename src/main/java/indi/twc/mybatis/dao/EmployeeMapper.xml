@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="indi.twc.mybatis.mapper.EmployeeMapper">
+
+	<select id="getEmployeeById" resultType="Employee">
+		select * from tbl_employee where id = #{id}
+	</select>
+
+	<!--多个参数会封装成一个map, #{}就是从map中获取指定的key的值-->
+	<select id="getEmployeeByIdAndLastName" resultType="Employee">
+		select * from tbl_employee where id=#{id} and last_name=#{lastName}
+	</select>
+
+	<select id="getEmployeeByMap" resultType="Employee">
+		select * from tbl_employee where id=#{id} and last_name=#{last_name}
+	</select>
+
+	<select id="getEmployeeList" resultType="Employee">
+		select * from tbl_employee
+	</select>
+
+	<select id="getEmployeeMapByLastName" resultType="Employee">
+		select * from tbl_employee where last_name LIKE #{last_name}
+	</select>
+
+	<!--resultMap自定义结果集映射规则-->
+	<resultMap type="Employee" id="MyEmp">
+		<id column="id"  property="id"/>
+		<result column="last_name" property="last_name"/>
+		<result column="email" property="email"/>
+		<result column="gender" property="gender"/>
+	</resultMap>
+	<select id="getEmployeeByResultMap" resultMap="MyEmp">
+		select * from tbl_employee where id=#{id}
+	</select>
+
+
+
+	<!--增删改-->
+	<!--useGeneratedKeys使用自增主键策略，获取主键-->
+	<insert id="addEmployee" useGeneratedKeys="true" keyProperty="id">
+		insert into tbl_employee(last_name, gender, email)
+			values(#{last_name}, #{gender}, #{email})
+	</insert>
+
+	<update id="updateEmployee">
+		update tbl_employee
+			set last_name=#{last_name}, gender=#{gender}, email=#{email}
+			where id=#{id}
+	</update>
+
+	<delete id="deleteEmployee">
+		delete from tbl_employee where id=#{id}
+	</delete>
+
+</mapper>
