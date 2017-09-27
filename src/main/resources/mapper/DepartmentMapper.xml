@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.scut.mybatis.dao.DepartmentMapper">
+
+	<select id="getDepartmentById" resultType="Department" >
+			SELECT * FROM tbl_dept where id=#{id}
+	</select>
+
+	<resultMap type="Department" id="MyDept">
+		<id column="did" property="id"/>
+		<result column="dept_name" property="dept_name"/>
+		<!--collection定义集合类型属性的封装规则-->
+		<!--ofType指定集合里面元素的类型-->
+		<collection property="employeeList" ofType="Employee">
+			<id column="eid" property="id"/>
+			<result column="last_name" property="last_name"></result>
+			<result column="gender" property="gender"></result>
+			<result column="email" property="email"></result>
+		</collection>
+	</resultMap>
+
+	<select id="getDepartmentByIdPlus" resultMap="MyDept" databaseId="mysql">
+		select e.id eid,
+		e.last_name last_name,
+		e.gender gender,
+		e.email email,
+		d.id did,
+		d.dept_name dept_name
+		from  tbl_dept d
+		left join
+		tbl_employee e
+		on d.id=e.d_Id
+		WHERE d.id=1
+	</select>
+
+	<resultMap type="Department" id="MyDeptStep">
+		<id column="id" property="id"/>
+		<result column="dept_name" property="dept_name"/>
+		<!--collection定义集合类型属性的封装规则-->
+		<collection property="employeeList"
+					select="indi.twc.mybatis.mapper.EmployeeMapper.getEmployeeListByDeptId"
+					column="id">
+		</collection>
+	</resultMap>
+
+	<select id="getDepartmentByStep" resultMap="MyDeptStep" databaseId="mysql">
+		select id,dept_name from tbl_dept where id=#{id}
+	</select>
+
+	<!--useGeneratedKeys使用自增主键策略，获取主键-->
+	<insert id="addDepartment" useGeneratedKeys="true" keyProperty="id">
+		insert into tbl_department(name) values(#{name})
+	</insert>
+
+	<update id="updateDepartment">
+		update tbl_department set name=#{name} where id=#{id}
+	</update>
+
+	<delete id="deleteDepartment">
+		delete from tbl_department where id=#{id}
+	</delete>
+</mapper>

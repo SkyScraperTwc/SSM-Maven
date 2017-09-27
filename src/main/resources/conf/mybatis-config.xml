@@ -4,8 +4,16 @@
  "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 
-    <typeAliases>
-  		<typeAlias type="indi.twc.mybatis.entity.Employee" alias="Employee"/>
+	<settings>
+		<!--<setting name="jdbcTypeForNull" value="NULL"></setting>-->
+		<!--<setting name="lazyLoadingEnabled" value="true"></setting>-->
+		<!--<setting name="aggressiveLazyLoading" value="false"></setting>-->
+		<!-- 打印查询语句 -->
+		<setting name="logImpl" value="STDOUT_LOGGING" />
+	</settings>
+
+	<typeAliases>
+  		<typeAlias type="com.scut.mybatis.entity.Employee" alias="Employee"/>
 	</typeAliases>
 
 </configuration>
