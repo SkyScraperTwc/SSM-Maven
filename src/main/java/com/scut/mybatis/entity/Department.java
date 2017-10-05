@@ -13,16 +13,8 @@ public class Department {
 
     private Integer id;
 
-    private String deptName;
+    private String name;
 
     private List<Employee> employeeList;
 
-    @Override
-    public String toString() {
-        return "Department{" +
-                "id=" + id +
-                ", deptName='" + deptName + '\'' +
-                ", employeeListSize=" + employeeList.size() +
-                '}';
-    }
 }

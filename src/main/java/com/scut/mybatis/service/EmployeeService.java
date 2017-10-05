@@ -1,7 +1,7 @@
 package com.scut.mybatis.service;
 
 import com.scut.mybatis.entity.Employee;
-import com.scut.mybatis.dao.EmployeeMapper;
+import com.scut.mybatis.mapper.EmployeeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -26,14 +26,22 @@ public class EmployeeService{
 
 	public Employee getEmployeeById(Integer id) {
 		return employeeMapper.getEmployeeById(id);
-	} 
+	}
+
+	public Employee getEmployeeByIdAssociation(Integer id) {
+		return employeeMapper.getEmployeeByIdAssociation(id);
+	}
+
+	public Employee getEmployeeAndDepartByStep(Integer id) {
+		return employeeMapper.getEmployeeAndDepartByStep(id);
+	}
 
 	public boolean updateEmployee(Employee employee) {
 		return employeeMapper.updateEmployee(employee);
 	}
 
-	public Employee getEmployeeByIdAndLastName(Integer id, String lastName){
-		return employeeMapper.getEmployeeByIdAndLastName(id,lastName);
+	public Employee getEmployeeByIdAndName(Integer id, String name){
+		return employeeMapper.getEmployeeByIdAndName(id,name);
 	}
 
 	public Employee getEmployeeByResultMap(Integer id){

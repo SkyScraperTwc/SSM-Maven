@@ -19,14 +19,4 @@ public class Employee {
 
     private Department department;
 
-    @Override
-    public String toString() {
-        return "Employee{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", gender='" + gender + '\'' +
-                ", departmentId=" + department.getId() +
-                '}';
-    }
 }

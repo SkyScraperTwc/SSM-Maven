@@ -1,13 +1,11 @@
-package com.scut.mybatis.dao;
+package com.scut.mybatis.mapper;
 
 import com.scut.mybatis.entity.Employee;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**
- * Created by Administrator on 2017/6/6 0006.
- */
 @Repository
 public interface EmployeeMapper {
 
@@ -17,13 +15,17 @@ public interface EmployeeMapper {
 
     Employee getEmployeeById(Integer id);
 
-//    Employee getEmployeeByIdAndLastName(@Param("id") Integer id, @Param("lastName") String lastName);
+    Employee getEmployeeByIdAssociation(Integer id);
 
-    Employee getEmployeeByIdAndLastName(Integer id, String lastName);
+    Employee getEmployeeByIdAndName(@Param("id") Integer id, @Param("name") String name);
+
+    Employee getEmployeeAndDepartByStep(Integer id);
 
     boolean addEmployee(Employee employee);
 
     boolean updateEmployee(Employee employee);
 
     boolean deleteEmployee(Integer id);
+
+    List<Employee> getEmployeeListByDeptId(Integer id);
 }

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.scut.mybatis.mapper.EmployeeMapper">
+
+	<select id="getEmployeeById" resultMap="EmpAndDept">
+		  select e.id e_id,
+		         e.name e_name,
+		         e.gender e_gender,
+		         e.email e_email,
+		         e.departmentId e_departmentId,
+
+				 d.id d_id,
+		  		 d.name d_name
+		  from   tbl_employee e,
+		   	     tbl_department d
+		  WHERE e.departmentId=d.id AND e.id=#{id};
+	</select>
+	<resultMap id="EmpAndDept" type="Employee">
+		<id column="e_id" property="id"/>
+		<result column="e_name" property="name"/>
+		<result column="e_gender" property="gender"/>
+		<result column="e_email" property="email"/>
+
+		<result column="d_id" property="department.id"/>
+		<result column="d_name" property="department.name"/>
+	</resultMap>
+
+	<!--////////////////////////////////////////-->
+
+	<select id="getEmployeeByIdAssociation" resultMap="EmpAndDeptAssociation">
+		select e.id e_id,
+		e.name e_name,
+		e.gender e_gender,
+		e.email e_email,
+		e.departmentId e_departmentId,
+
+		d.id d_id,
+		d.name d_name
+		from   tbl_employee e,
+		tbl_department d
+		WHERE e.departmentId=d.id AND e.id=#{id};
+	</select>
+	<resultMap id="EmpAndDeptAssociation" type="Employee">
+		<id column="e_id" property="id"/>
+		<result column="e_name" property="name"/>
+		<result column="e_gender" property="gender"/>
+		<result column="e_email" property="email"/>
+
+		<association property="department" javaType="Department">
+			<id column="d_id" property="id"/>
+			<result column="d_name" property="name"></result>
+		</association>
+	</resultMap>
+
+	<!--////////////////////////////////////////-->
+
+	<select id="getEmployeeAndDepartByStep" resultMap="EmpAndDeptByStep">
+		select * from tbl_employee WHERE id=#{id}
+	</select>
+	<resultMap id="EmpAndDeptByStep" type="Employee">
+		<id column="e_id" property="id"/>
+		<result column="e_name" property="name"/>
+		<result column="e_gender" property="gender"/>
+		<result column="e_email" property="email"/>
+
+		<association property="department"
+					 select="com.scut.mybatis.mapper.DepartmentMapper.getDepartmentById"
+					 column="departmentId">
+		</association>
+	</resultMap>
+
+	<!--////////////////////////////////////////-->
+
+	<select id="getEmployeeListByDeptId" resultType="Employee">
+		SELECT * from tbl_employee where departmentId=#{id}
+	</select>
+
+	<!--多个参数会封装成一个map, #{}就是从map中获取指定的key的值-->
+	<select id="getEmployeeByIdAndName" resultType="Employee">
+		select * from tbl_employee where id=#{id} and name=#{name}
+	</select>
+
+	<select id="getEmployeeList" resultType="Employee">
+		select * from tbl_employee
+	</select>
+
+	<!--resultMap自定义结果集映射规则-->
+	<resultMap type="Employee" id="MyEmployee">
+		<id property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="email" column="email"/>
+		<result property="gender" column="gender"/>
+	</resultMap>
+
+	<select id="getEmployeeByResultMap" resultMap="MyEmployee">
+		select * from tbl_employee where id=#{id}
+	</select>
+
+	<!--useGeneratedKeys使用自增主键策略，获取主键-->
+	<insert id="addEmployee" useGeneratedKeys="true" keyProperty="id">
+		insert into tbl_employee(name, gender, email, departmentId) values(#{name}, #{gender}, #{email}, #{department.id})
+	</insert>
+
+	<update id="updateEmployee">
+		update tbl_employee set name=#{name}, gender=#{gender}, email=#{email}, departmentId=#{department.id} where id=#{id}
+	</update>
+
+	<delete id="deleteEmployee">
+		delete from tbl_employee where id=#{id}
+	</delete>
+
+</mapper>
