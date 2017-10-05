@@ -1,7 +1,7 @@
 package com.scut.mybatis.service;
 
 import com.scut.mybatis.entity.Employee;
-import com.scut.mybatis.mapper.EmployeeMapper;
+import com.scut.mybatis.mapper.impl.EmployeeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -13,7 +13,7 @@ public class EmployeeService{
 	private EmployeeMapper employeeMapper;
 
 	public boolean addEmployee(Employee employee) {
-		return employeeMapper.addEmployee(employee);
+		return employeeMapper.insert(employee);
 	} 
   
 	public List<Employee> getAllEmployee() {
@@ -21,30 +21,30 @@ public class EmployeeService{
 	}
  
 	public boolean deleteEmployee(Integer id) {
-		return  employeeMapper.deleteEmployee(id);
+		return  employeeMapper.delete(id);
 	}
 
 	public Employee getEmployeeById(Integer id) {
-		return employeeMapper.getEmployeeById(id);
+		return employeeMapper.getById(id);
 	}
 
 	public Employee getEmployeeByIdAssociation(Integer id) {
-		return employeeMapper.getEmployeeByIdAssociation(id);
+		return employeeMapper.getByAssociation(id);
 	}
 
 	public Employee getEmployeeAndDepartByStep(Integer id) {
-		return employeeMapper.getEmployeeAndDepartByStep(id);
+		return employeeMapper.getByStep(id);
 	}
 
 	public boolean updateEmployee(Employee employee) {
-		return employeeMapper.updateEmployee(employee);
+		return employeeMapper.update(employee);
 	}
 
 	public Employee getEmployeeByIdAndName(Integer id, String name){
-		return employeeMapper.getEmployeeByIdAndName(id,name);
+		return employeeMapper.getByIdAndName(id,name);
 	}
 
 	public Employee getEmployeeByResultMap(Integer id){
-		return employeeMapper.getEmployeeByResultMap(id);
+		return employeeMapper.getByResultMap(id);
 	}
 }

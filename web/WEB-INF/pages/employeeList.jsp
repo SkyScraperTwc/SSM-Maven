@@ -33,14 +33,14 @@
 					</c:when>  
 					
 					<c:otherwise>  
-					  <c:forEach items="${requestScope.employeeList }" var="emp" varStatus="sta">
+					  <c:forEach items="${requestScope.employeeList }" var="employee" varStatus="sta">
 						<tr align='center'> 
-							<td>${emp.id}</td><!--序号1234567890  -->
-							<td align="center">${emp.last_name }</td>
-							<td>${emp.email }</td>
-							<td>${emp.gender}</td>
-							<td> <a href="/Test-SSM-Maven/employee/toEdit/${emp.id }">修改</a>
-								| <a href="/Test-SSM-Maven/employee/delEmp/${emp.id }">删除</a></td>
+							<td>${employee.id}</td><!--序号1234567890  -->
+							<td align="center">${employee.name }</td>
+							<td>${employee.email }</td>
+							<td>${employee.gender}</td>
+							<td> <a href="/Test-SSM-Maven/employee/toEdit/${employee.id }">修改</a>
+								| <a href="/Test-SSM-Maven/employee/delEmp/${employee.id }">删除</a></td>
 						</tr>
 			       </c:forEach>
 				</c:otherwise>  

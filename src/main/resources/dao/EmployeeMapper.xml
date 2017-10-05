@@ -3,9 +3,9 @@
  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.scut.mybatis.mapper.EmployeeMapper">
+<mapper namespace="com.scut.mybatis.mapper.impl.EmployeeMapper">
 
-	<select id="getEmployeeById" resultMap="EmpAndDept">
+	<select id="getById" resultMap="EmpAndDept">
 		  select e.id e_id,
 		         e.name e_name,
 		         e.gender e_gender,
@@ -30,7 +30,7 @@
 
 	<!--////////////////////////////////////////-->
 
-	<select id="getEmployeeByIdAssociation" resultMap="EmpAndDeptAssociation">
+	<select id="getByAssociation" resultMap="EmpAndDeptAssociation">
 		select e.id e_id,
 		e.name e_name,
 		e.gender e_gender,
@@ -57,7 +57,7 @@
 
 	<!--////////////////////////////////////////-->
 
-	<select id="getEmployeeAndDepartByStep" resultMap="EmpAndDeptByStep">
+	<select id="getByStep" resultMap="EmpAndDeptByStep">
 		select * from tbl_employee WHERE id=#{id}
 	</select>
 	<resultMap id="EmpAndDeptByStep" type="Employee">
@@ -67,7 +67,7 @@
 		<result column="e_email" property="email"/>
 
 		<association property="department"
-					 select="com.scut.mybatis.mapper.DepartmentMapper.getDepartmentById"
+					 select="com.scut.mybatis.mapper.impl.DepartmentMapper.getById"
 					 column="departmentId">
 		</association>
 	</resultMap>
@@ -79,7 +79,7 @@
 	</select>
 
 	<!--多个参数会封装成一个map, #{}就是从map中获取指定的key的值-->
-	<select id="getEmployeeByIdAndName" resultType="Employee">
+	<select id="getByIdAndName" resultType="Employee">
 		select * from tbl_employee where id=#{id} and name=#{name}
 	</select>
 
@@ -95,20 +95,20 @@
 		<result property="gender" column="gender"/>
 	</resultMap>
 
-	<select id="getEmployeeByResultMap" resultMap="MyEmployee">
+	<select id="getByResultMap" resultMap="MyEmployee">
 		select * from tbl_employee where id=#{id}
 	</select>
 
 	<!--useGeneratedKeys使用自增主键策略，获取主键-->
-	<insert id="addEmployee" useGeneratedKeys="true" keyProperty="id">
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
 		insert into tbl_employee(name, gender, email, departmentId) values(#{name}, #{gender}, #{email}, #{department.id})
 	</insert>
 
-	<update id="updateEmployee">
+	<update id="update">
 		update tbl_employee set name=#{name}, gender=#{gender}, email=#{email}, departmentId=#{department.id} where id=#{id}
 	</update>
 
-	<delete id="deleteEmployee">
+	<delete id="delete">
 		delete from tbl_employee where id=#{id}
 	</delete>
 

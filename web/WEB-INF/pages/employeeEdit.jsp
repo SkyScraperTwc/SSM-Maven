@@ -14,7 +14,7 @@
 		     	 <tr> 
 						<td>姓名：</td>  
 						<td>
-							<input type="text" name="last_name" value="${employee.last_name }"/>
+							<input type="text" name="last_name" value="${employee.name }"/>
 						</td>
 				 </tr>   
 				 <tr> 

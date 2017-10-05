@@ -3,9 +3,9 @@
  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.scut.mybatis.mapper.DepartmentMapper">
+<mapper namespace="com.scut.mybatis.mapper.impl.DepartmentMapper">
 
-	<select id="getDepartmentById" resultMap="MyDepartment" >
+	<select id="getById" resultMap="MyDepartment" >
 			select e.id e_id,
 			e.name e_name,
 			e.gender e_gender,
@@ -32,7 +32,7 @@
 
 	<!--////////////////////////////////////////-->
 
-	<select id="getDepartmentByStep" resultMap="MyDeptStep" >
+	<select id="getByStep" resultMap="MyDeptStep" >
 		select id,name from tbl_department where id=#{id}
 	</select>
 
@@ -40,8 +40,8 @@
 		<id column="id" property="id"/>
 		<result column="name" property="name"/>
 		<collection property="employeeList"
-					select="com.scut.mybatis.mapper.EmployeeMapper.getEmployeeListByDeptId"
-					column="name">
+					select="com.scut.mybatis.mapper.impl.EmployeeMapper.getEmployeeListByDeptId"
+					column="id">
 		</collection>
 	</resultMap>
 
