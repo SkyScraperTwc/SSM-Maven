@@ -27,6 +27,14 @@
 			<property name="suffix" value=".jsp"></property>
 	</bean>
 
+	<!-- 拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<bean class="com.scut.mybatis.filter.SessionInterceptor"/>
+		</mvc:interceptor>
+	</mvc:interceptors>
+
 	  <!--静态资源处理 -->
 	  <mvc:default-servlet-handler></mvc:default-servlet-handler>
 	  <!-- 配置mvc:view-controller必须配置mvc:annotation-driven -->
