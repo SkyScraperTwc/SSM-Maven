@@ -16,3 +16,10 @@ CREATE TABLE tbl_department (
   name varchar(20) NOT NULL COMMENT '姓名',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE concurrent (
+  id INT NOT NULL AUTO_INCREMENT COMMENT '主键',
+  name varchar(20) NOT NULL COMMENT '名称',
+  amount varchar(20) NOT NULL COMMENT '数量',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -15,6 +15,7 @@
 	<typeAliases>
   		<typeAlias type="com.scut.mybatis.entity.Employee" alias="Employee"/>
 		<typeAlias type="com.scut.mybatis.entity.Department" alias="Department"/>
+		<typeAlias type="com.scut.mybatis.entity.ConcurrentBean" alias="ConcurrentBean"/>
 	</typeAliases>
 
 </configuration>
