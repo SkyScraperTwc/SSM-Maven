@@ -10,4 +10,6 @@ public interface ConcurrentMapper extends IBaseMapper<ConcurrentBean> {
     boolean updatePositive(ConcurrentBean concurrentBean);
 
     boolean updatePessimistic(ConcurrentBean concurrentBean);
+
+    boolean updatePositive2(ConcurrentBean concurrentBean);
 }

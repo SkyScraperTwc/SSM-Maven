@@ -1,4 +1,3 @@
-package com.scut.mybatis.test;
 
 import com.scut.mybatis.entity.Department;
 import com.scut.mybatis.entity.Employee;
@@ -46,7 +45,7 @@ public class EmployeeTest {
     }
 
     @Test
-    public void testAdd() {
+    public void testAdd() throws Exception {
         Employee employee = new Employee();
         employee.setEmail("email1");
         employee.setName("twc");

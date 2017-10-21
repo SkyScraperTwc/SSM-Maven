@@ -1,5 +1,3 @@
-package com.scut.mybatis.test;
-
 import com.scut.mybatis.entity.Department;
 import com.scut.mybatis.entity.Employee;
 import com.scut.mybatis.service.DepartmentService;

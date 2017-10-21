@@ -27,5 +27,7 @@ public class ConcurrentService {
 		return concurrentMapper.updatePessimistic(concurrentBean);
 	}
 
-
+    public boolean updatePositive2(ConcurrentBean concurrentBean) {
+		return concurrentMapper.updatePositive2(concurrentBean);
+    }
 }

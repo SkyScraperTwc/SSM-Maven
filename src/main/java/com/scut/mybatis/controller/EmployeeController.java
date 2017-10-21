@@ -24,7 +24,7 @@ public class EmployeeController {
 	}
 
 	@RequestMapping("/add")
-	public String add(Employee employee){
+	public String add(Employee employee) throws Exception {
 		employeeService.addEmployee(employee);
 		return PageReturnConst.REDIRECT_EMPLOYEE_LIST;
 	}

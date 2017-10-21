@@ -7,8 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Transaction;
 
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RequestMapping("/concurrent")
@@ -19,7 +23,29 @@ public class ConcurrentController {
     @Autowired
     private ConcurrentService concurrentService;
 
+    @Autowired
+    private JedisPool jedisPool;
+
+    private List<HttpServletRequest> list = new ArrayList<HttpServletRequest>();
+
     private Map<String,String> map = new ConcurrentHashMap<String, String>();
+
+    private Set<String> set = new HashSet<String>();
+
+    @RequestMapping("/tes1")
+    public String tes1(@RequestParam("username")String username,@RequestParam("age") String age) throws InterruptedException {
+        System.out.println(username+"------"+age);
+        return "success";
+    }
+
+
+    @RequestMapping("/test2")
+    public String test2(HttpServletRequest request) throws InterruptedException {
+        list.add(request);
+        System.out.println("------"+list.size());
+        return "success";
+    }
+
 
     @RequestMapping("/add")
     public String testAdd() throws InterruptedException {
@@ -39,21 +65,24 @@ public class ConcurrentController {
      */
     @RequestMapping("/updatePessimistic")
     public String updatePessimistic(@RequestParam("username") String username) throws InterruptedException {
-        ConcurrentBean concurrentBean = new ConcurrentBean();
-        concurrentBean.setId(1004);
-        boolean result =  concurrentService.updatePessimistic(concurrentBean);
-        if (result){
-            map.put(username,"object");
-            return String.valueOf(result);
-        }else{
-            System.out.println(map);
-            System.out.println(map.size());
-            return "物品已经抢购完！";
-        }
+            ConcurrentBean concurrentBean = new ConcurrentBean();
+            if (concurrentBean.getAmount()>0){
+                //判断！！！
+            }
+            concurrentBean.setId(1004);
+            boolean result =  concurrentService.updatePessimistic(concurrentBean);
+            if (result){
+                map.put(username,"object");
+                return String.valueOf(result);
+            }else{
+                System.out.println(map);
+                System.out.println(map.size());
+                return "物品已经抢购完！";
+            }
     }
 
     /**
-     * 乐观锁
+     * 乐观锁，version=${version}版本
      * @return
      * @throws InterruptedException
      */
@@ -75,10 +104,97 @@ public class ConcurrentController {
         }
     }
 
-    @RequestMapping("/testJMeterParam")
-    public String testJMeterParam(@RequestParam("username") String username, @RequestParam("age") int age) throws InterruptedException {
-        log.info(username+"---"+age);
+    /**
+     * 乐观锁，${version}>version版本
+     * @return
+     * @throws InterruptedException
+     */
+    @RequestMapping("/updatePositive2")
+    public String updatePositive2(@RequestParam("username") String username) throws InterruptedException {
+        ConcurrentBean concurrentBean = concurrentService.getById(1004);
+        int newAmount = concurrentBean.getAmount() - 1;
+        int newVersion = concurrentBean.getVersion() + 1;
+        if(newAmount>=0){
+            concurrentBean.setAmount(newAmount);
+            concurrentBean.setVersion(newVersion);
+            boolean result = concurrentService.updatePositive2(concurrentBean);
+            if (result){
+                map.put(username,"object");
+            }
+            return String.valueOf(result);
+        }else {
+            System.out.println(map);
+            System.out.println(map.size());
+            return "物品已经抢购完！";
+        }
+    }
+
+    @RequestMapping("/testRedisDecr")
+    public String testRedisDecr(@RequestParam("username") String username, @RequestParam("age") int age) throws InterruptedException {
+        Jedis jedis = jedisPool.getResource();
+        Long result = jedis.decr("num");
+        if(result>=0){
+            set.add(username);
+            System.out.println("-----------------");
+            System.out.println(set);
+            System.out.println(set.size());
+        }
         return username+"---"+age;
+    }
+
+    @RequestMapping("/testRedisWatch")
+    public String testRedisWatch(@RequestParam("username") String username, @RequestParam("age") int age) throws InterruptedException {
+        Jedis jedis = jedisPool.getResource();
+        String flag = "";
+        //watch要放这里！
+        jedis.watch("accountBalance");
+        // 观察 总标值，每人抢购一元
+        // 判断是否购买过
+        Boolean isBuy = jedis.sismember("usernameSet", username);
+        if (isBuy) {
+            flag = "username----已经购买过了!!";
+            return flag;
+        }
+        //投资额
+        int r = 1;
+        int lastAccount = 0;
+        String balance = jedis.get("accountBalance");
+        if (balance.length()>0) {
+            lastAccount = Integer.valueOf(balance) - r;
+        }
+        if (lastAccount < 0) {
+            flag = "username----物品抢购完了！！";
+        }else{
+
+//            final int finalLastAccount = lastAccount;
+//            SessionCallback<Object> sessionCallback=new SessionCallback<Object>(){
+//                @Override
+//                public Object execute(RedisOperations operations) throws DataAccessException {
+//                    operations.watch("accountBalance");
+//                    operations.multi();
+//                    operations.opsForValue().set("accountBalance", finalLastAccount + "");
+//                    List<Object> list =  operations.exec();
+//                    System.out.println(list);
+//                    return list;
+//                }
+//            };
+//            List<Object> result = (List<Object>) redisCacheService.execute(sessionCallback);
+
+            Transaction tx = jedis.multi();
+            tx.set("accountBalance", lastAccount + "");
+            List<Object> result = tx.exec();
+
+            if (result == null || result.isEmpty()) {
+                flag = "watch监控被更改过----物品抢购失败！！";
+                //上面执行过exec()了，不需要再执行unwatch()
+                jedis.unwatch();
+            } else {
+                System.out.println("恭喜您，" + username + "已经中标" + r + "元，标余额" + lastAccount + "元");
+                jedis.sadd("usernameSet", username + "");
+                flag = "抢购成功!!";
+            }
+        }
+        return flag;
     }
 }
      

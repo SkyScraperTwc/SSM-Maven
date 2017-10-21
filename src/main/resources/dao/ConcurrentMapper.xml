@@ -12,17 +12,31 @@
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
 		insert into tbl_concurrent(name, amount) values(#{name}, #{amount})
 	</insert>
-	<!--悲观锁，MySQL行锁-->
+
+	<!--悲观锁1，MySQL行锁-->
 	<update id="updatePessimistic">
 		update tbl_concurrent set amount=amount-1
-		where id=#{id} AND amount>0
+			where id=#{id} AND amount>0
 	</update>
 
-	<!--乐观锁-->
+	<!--悲观锁2，MySQL行锁-->
+	<!--<update id="updatePessimistic2">-->
+		<!--update tbl_concurrent set amount=amount-1-->
+			<!--where id=#{id}-->
+	<!--</update>-->
+
+	<!--乐观锁1，version=${version}-->
 	<update id="updatePositive">
 		update tbl_concurrent set amount=#{amount},version=version+1
 			where id=#{id} AND version=#{version}
 	</update>
+
+	<!--乐观锁2，${version}>version-->
+	<update id="updatePositive2">
+		update tbl_concurrent set amount=#{amount},version=#{version}
+		where id=#{id} AND #{version}>version
+	</update>
+
 
 	<delete id="delete">
 		delete from tbl_concurrent where id=#{id}

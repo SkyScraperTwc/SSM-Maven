@@ -4,18 +4,24 @@ import com.scut.mybatis.entity.Employee;
 import com.scut.mybatis.mapper.impl.EmployeeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
+@Transactional(rollbackFor = Exception.class)
 @Service
 public class EmployeeService{
 
 	@Autowired
 	private EmployeeMapper employeeMapper;
 
-	public boolean addEmployee(Employee employee) {
-		return employeeMapper.insert(employee);
-	} 
-  
+	public boolean addEmployee(Employee employee) throws Exception {
+		boolean result = employeeMapper.insert(employee);
+		throw new Exception("addEmployee error!!!");
+//		int a = 1/0;//RuntimeException,Spring默认回滚异常
+//		return result;
+	}
+
 	public List<Employee> getAllEmployee() {
 		return employeeMapper.getEmployeeList();
 	}

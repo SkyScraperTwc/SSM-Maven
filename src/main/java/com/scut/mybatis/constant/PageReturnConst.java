@@ -12,5 +12,4 @@ public final class PageReturnConst {
     public final static String JSP_EMPLOYEE_LIST = "employeeList";
 
     public final static String JSP_EMPLOYEE_EDIT = "employeeEdit";
-
 }
