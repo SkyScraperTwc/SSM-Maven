@@ -83,6 +83,17 @@
 	</bean>
 
 	<!-- 开启事务注解驱动 -->
-	<tx:annotation-driven transaction-manager="dataSourceTransactionManager"/>
+	<!--<tx:annotation-driven transaction-manager="dataSourceTransactionManager"/>-->
 
+	<!-- 事物切面配置 -->
+	<tx:advice id="txAdvice" transaction-manager="dataSourceTransactionManager">
+		<tx:attributes>
+			<tx:method name="addEmployee" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+		</tx:attributes>
+	</tx:advice>
+
+	<aop:config>
+		<aop:pointcut id="txPointcut" expression="execution (* com.scut.mybatis.service.*.*(..))"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+	</aop:config>
 </beans>
